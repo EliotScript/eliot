@@ -1,0 +1,117 @@
+@import sys, os
+
+?extr(Eliot, sys)
+
+
+class Token(){
+	function __init__(value, type){
+		this.value, type = (value, type)
+		this.__eliotrepr__ = f'{this.value} {this.type}'
+	}
+}
+
+
+class Lex(){
+	function __init__(code){
+		this.code = code
+		this.pos = -1
+
+		this.next()
+		this.compile()
+	}
+
+	function next(){
+		this.pos += 1
+
+		if (this.pos < len(this.code)){
+			this.token = this.code[this.pos]
+		} else {
+			this.token = null
+		}
+	}
+
+	function compile(){
+		this.letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIKLMNOPQRSTUVWXYZ_$'
+		this.numbers = '1234567890'
+
+		this.tokens = []
+
+		while (this.token){
+			if (this.token in this.letters){
+				ident = ''
+
+				while (this.token and this.token in this.letters){
+					ident += this.token
+					this.next()
+				}
+
+				this.tokens.append(Token(ident, 'IDENT'))
+
+			} else if (this.token in ["'", '"']){
+				stop = this.token
+				this.next()
+
+				string = ''
+
+				while (this.token and this.token != stop){
+					string += this.token
+					this.next()
+				}
+
+				this.next()
+				this.tokens.append(Token(string, 'STR'))
+
+			} else if (this.token in this.numbers){
+				num = ''
+
+				while (this.token in this.numbers){
+					num += this.token
+					this.next()
+				}
+
+				this.tokens.append(Token(int(num), 'INT'))
+
+			} else if (this.token in ['=', '+', '-', '*', '/']){
+				operator = this.token
+				this.next()
+
+				switch (operator) {
+					case '+':
+						this.tokens.append(Token('+', 'PLUS'))
+						termin
+					case '-':
+						this.tokens.append(Token('-', 'MINUS'))
+						termin
+					case '*':
+						this.tokens.append(Token('*', 'MULT'))
+						termin
+					case '/':
+						this.tokens.append(Token('/', 'DIV'))
+						termin
+					default:
+						this.tokens.append(Token('=', 'ASSIGN'))
+				}
+
+			} else {
+				this.next()
+			}
+		}
+
+		for i in this.tokens{
+			print(i.type)
+		}
+
+	}
+}
+
+codes = ```
+
+pro = 'hello world'
+
+cal = 12 + 5 - 4
+
+```
+
+Lex(codes)
+
+lang = 'eliotscript'
