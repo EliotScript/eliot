@@ -1,10 +1,10 @@
-import lexer
+import Eslexer
 import os, binascii, sys
 import importlib, platform
 import colorama
 import pathlib
 import json
-from formats import Format
+from Esformat import Format
 
 
 sys.setrecursionlimit(12000)
@@ -137,7 +137,7 @@ class Parser:
 		if type(code_) == list:
 			self.toks = code_
 		else:
-			self.toks = lexer.Lexer(code_, file_).tokens
+			self.toks = Eslexer.Lexer(code_, file_).tokens
 
 	# increments token
 	def next(self):
@@ -859,7 +859,7 @@ class Parser:
 				code.append(self.tok)
 			else:
 				self.prev()
-				code.append(lexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.tab))
+				code.append(Eslexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.tab))
 				self.next()
 
 			self.next()
@@ -1060,7 +1060,7 @@ class Parser:
 	# makes extractor tokens
 	def ctoken(self, ty, val):
 		# pass
-		return lexer.Token(ty, self.tok.line, val, self.tok.file, self.tok.pos, self.tok.tab)
+		return Eslexer.Token(ty, self.tok.line, val, self.tok.file, self.tok.pos, self.tok.tab)
 
 	# formats an f-string
 	def formats(self):
@@ -1070,7 +1070,7 @@ class Parser:
 
 		for i in l:
 			if type(i) == list:
-				lexed = [self.ctoken('IDENTIFIER', '__DIRECT_FORMAT_VAR__'), self.ctoken('EQUALS', '=')] + lexer.Lexer(i[0] + '\n').tokens + [self.ctoken('NEWLINE', r'\n')]
+				lexed = [self.ctoken('IDENTIFIER', '__DIRECT_FORMAT_VAR__'), self.ctoken('EQUALS', '=')] + Eslexer.Lexer(i[0] + '\n').tokens + [self.ctoken('NEWLINE', r'\n')]
 
 				format_ = Parser([lexed, []], [self.symbol_, True, self.recursive], self.Cmode('format'), self.obj, self.traces).symbol_['__DIRECT_FORMAT_VAR__']
 
@@ -1753,11 +1753,11 @@ class Parser:
 
 		if not self.tok:
 			self.prev()
-			toks.append(lexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.line))
+			toks.append(Eslexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.line))
 			self.next()
 
 		else:
-			toks.append(lexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.line))
+			toks.append(Eslexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.line))
 
 		return toks
 
@@ -2316,14 +2316,14 @@ class Parser:
 					
 					self.next()
 					# count -= 1
-					toks = [lexer.Token('WLOOP', self.tok.line, 'while', self.tok.file, self.tok.pos, self.tok.tab)]
+					toks = [Eslexer.Token('WLOOP', self.tok.line, 'while', self.tok.file, self.tok.pos, self.tok.tab)]
 
 					while count:
 						toks.append(self.tok)
 						self.next()
 						count -= 1
 
-					toks.append(lexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.tab))
+					toks.append(Eslexer.Token('NEWLINE', self.tok.line, r'\n', self.tok.file, self.tok.pos, self.tok.tab))
 
 					if self.tok.type != 'NEWLINE':
 						toks += self.collecttoks()

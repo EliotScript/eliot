@@ -1,4 +1,4 @@
-from parser import Interpreter
+from Esparser import Interpreter
 
 
 # cli program for eliot
